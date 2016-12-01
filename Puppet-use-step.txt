@@ -1,0 +1,30 @@
+Steps to Use puppet enterprise : A configuration and management tool 
+Writing manifests i.e configuration scripts
+
+Some directories are created by default when puppet is installed. 
+All work goes into /etc/puppetlabs/puppet directory 
+Here you have manifest , modules etc directories
+To create a configuration script always use modules dir .
+Inside module directory create a directory for your tasks that you want to perform on server.
+inside that directory , create new directories , files ,maniifests , templates ,tests.
+All configuration scripts are kept in manifests directory.
+Manifests dir will have one init.pp file which contains the class named same as direcotry we created for task 
+This init.pp file will be called by default when puppet tries to apply these configurations in servers.
+inside manifests dir , you can create other directories and inside that you can place different .pp file. 
+----------------------------------------------------------------------------------------------------------------
+Testing puppet manifest i.e configuration files.
+Now class has been defined into the init.pp file. To test this configuration fil we need to declare this class.
+Go to one directory up and cd test directory 
+create init.pp and include class_name in that file.
+simply write include class_name into that file and save it.
+run command puppet apply --noop init.pp in test dir.
+puppet apply --noop --debug init.pp
+------------------------------------------------------------------------------------------------------------------
+Applying puppet manifest on node/server 
+puppet apply --debug init.pp 
+------------------------------------------------------------------------------------------------------------------
+Applying manifests on node :
+edit site.pp file from /etc/puppetlabs/puppet/manifests and add the node hostname in node definition.
+add classses into that definition 
+puppet agent -t --> run this command on node 
+------------------------------------------------------------------------------------------------------------------
