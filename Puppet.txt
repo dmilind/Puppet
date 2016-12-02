@@ -1,0 +1,123 @@
+Puppet :
+Introduction:
+			Puppet is a configuration and management tool used to configure the servers in  the cloud or on prem. Puppet
+			manages configuration data , including users , packages and services. 
+			Puppet uses declarative language. No need to study extra language for this. This is more readable language. 
+			Puppet automate the task of configuration and management on thousands of nodes.
+			Puppet DSL example:
+				
+				user { 'Joe':
+					ensure     => present,
+					id		   => '1001',
+					gid        => '1000',
+					comment    => 'Joe User',
+					managehome => true,
+				}
+				
+			This was the resource declaration. User is the resource which is declared. Such more resources will be combined
+			and enlisted in a single entity which is called as Class. Now Class is the configuration script for the puppet.
+			Everything that we need to perform on node or servers can be mentioned in the Class. 
+			
+			Example of Class
+			
+				Class Class_name {
+					Resource { 
+						configuration..
+					}
+					Resource {
+						confiration 
+					}
+				    ..
+					..
+					..
+					..
+				} 
+				
+Node Classification : 
+	It is the process of assigning a class to the node for processing.
+	
+Puppet is a master-agent type of environment. 
+Puppet Enterprise Stack and Core concepts:
+	Puppet Master:
+		Puppet master is the tool installed on the system when puppet is installed. Puppet master is responsible for 
+		creating catalogues , configuration files for agent nodes. More over this is the workstation where we writes 
+		configuration and configure servers.
+	
+	Catalogue:
+		Catalogue is the document downloaded from the master to the agent node. This catalogue contains all the information
+		about the desired state of the nodes.
+	
+	Puppet Agent:
+		Puppet agent is the tool or pragram install on all nodes and servers that we want to manage and configure. puppet
+		agent will do the convergence after every 30 min by default and pull the catalogue and implements the changes 
+		on the servers.
+		
+Puppet Process:
+	Install puppet master and puppet agents
+	Create configurations files (modules/classes) which includes resources which tell the desired state of the node
+	Assign these configuration files to the nodes or servers.
+		configuration can be assigned or declared in the console.
+		configuration can be assigned or declared in /etc/puppetlabs/puppet/manifests/site.pp
+		
+		
+Puppet master Installation:
+
+	1. choose server puppet enterprise will be installed.
+	2. Download the puppet enterprise tarball
+	3. Extract the tarball
+	4. make sure these ports are open : 3000 8140 61613 443 5432 
+	5. cd /etc/ssh/
+	6. vim sshd_config
+	7. Uncommented Permit Root Login and make sure yes is there
+	8. restart ssh configuration --> service sshd restart
+	9. check hostname of the server
+	10.vim /etc/hosts  --> add hostname here in correct location after 127.0.0.1 and before localhost.localdomain 
+	11. cd puppet-enterprise dir
+	12. ./puppet-enterprise-installer  
+	13. take the URL and hit that in browser
+	14. select monolothic or split according to the requirement. 
+	15. for practice use Monolithic.
+	16. put hostname in puppet master FQDN
+	17. Put SSH username and password
+	18. create console username and addess 
+	19. continue the process
+	This process will take significantly long time
+	20. click start using puppet enterprise 
+	21. Enter credentials
+	22. you can see the dashboard
+	
+	Here PE is officially installed.
+When PE is installed some other services will also be installed. So these services are:
+	pe-console-auth
+	pe-httpd
+	pe-installer
+	pe-mcollective
+	pe-postgresql
+	pe-puppet
+	pe-puppet-dashboard
+	pe-puppet-db
+	hiera
+	facter
+
+All log folders will be created for all these services in /var/log directory. For troubleshooting any service, these log 
+files will be helpfull.
+
+In /etc/puppetlabs dir all required configuration files are placed. All configuration we do in this directory. core puppet
+policy lives in puppet dir. 
+puppet.conf is the configuration files which is very important
+
+Installing Puppet Agent from Puppet Master.
+	1. fire up fresh machine and connect to it using root user and consider that as a server
+	2. saveral ports need to be open 443 8140(to communicate to puppet master) should be open.
+	3. curl -k https://hostname.com:8140/packages/current/install.bash | bash 
+    4. This will download puppet agent 
+	5. look for ensure => running then agent is installed successfully and running
+	6. type --> puppet agent -t (test flag)
+	7. on puppet master check certs --> puppet cert list 
+	8. puppet cert sign hostname_of_node or certificate name listed in puppet master
+	9. puppet cert sign -a --> sign all certificates 
+	10. run again puppet agent -t 
+	
+		
+				
+			
