@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kube-apiserver
+  namespace: kube-system
+  labels:
+    k8s-app: kube-apiserver
+spec:
+  containers:
+    -
+      command:
+        - /hyperkube
+        - apiserver
+        - "--apiserver-count=1"
+        - "--bind-address=0.0.0.0"
+        - "--etcd-servers=https://127.0.0.1:2379"
+        - "--etcd-cafile=/etc/kubernetes/ssl/ca.pem"
+        - "--etcd-certfile=/etc/kubernetes/ssl/apiserver.pem"
+        - "--etcd-keyfile=/etc/kubernetes/ssl/apiserver-key.pem"
+        - "--allow-privileged=true"
+        - "--service-cluster-ip-range=10.222.0.0/16"
+        - "--service-node-port-range=10000-53000"
+        - "--secure-port=443"
+        - "--advertise-address=<%= @ipaddress %>"
+        - "--admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota"
+        - "--client-ca-file=/etc/kubernetes/ssl/ca.pem"
+        - "--tls-cert-file=/etc/kubernetes/ssl/apiserver.pem"
+        - "--tls-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem"
+        - "--service-account-key-file=/etc/kubernetes/ssl/apiserver-key.pem" 
+      image: "<%= @image_registry %>/kubernetes/hyperkube:v1.5.2_coreos.0"
+      imagePullPolicy: IfNotPresent
+      name: kube-apiserver
+      livenessProbe:
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 8080
+        scheme: HTTP
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+      ports:
+        -
+          containerPort: 443
+          hostPort: 443
+          name: https
+        -
+          containerPort: 8080
+          hostPort: 8080
+          name: local
+      resources:
+        requests:
+          cpu: 250m
+      volumeMounts:
+        -
+          mountPath: /etc/kubernetes/ssl
+          name: ssl-certs-kubernetes
+          readOnly: true
+        -
+          mountPath: /etc/ssl/certs
+          name: ssl-certs-host
+          readOnly: true
+  hostNetwork: true
+  volumes:
+    -
+      hostPath:
+        path: /etc/kubernetes/ssl
+      name: ssl-certs-kubernetes
+    -
+      hostPath:
+        path: /usr/share/ca-certificates
+      name: ssl-certs-host

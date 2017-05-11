@@ -1,0 +1,80 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: etcd-server
+  namespace: kube-system
+  labels:
+    k8s-app: etcd
+spec:
+  containers:
+    -
+      command:
+        - /bin/sh
+        - "-c"
+        - "/usr/local/bin/etcd \
+           --name <%= @hostname %> \
+           --initial-cluster dops-pupa1=https://<%= @master01_IP %>:12380,dops-pupa2=https://<%= @master02_IP %>:12380 \
+           --initial-advertise-peer-urls https://<%= @master01_IP %>:12380 \
+           --listen-peer-urls https://<%= @master01_IP %>:12380 \
+           --advertise-client-urls https://<%= @master01_IP %>:12379 \
+           --listen-client-urls https://127.0.0.1:12379,https://<%= @master01_IP %>:12379 \
+           --cert-file /etc/ssl/kubernetes-etcd/apiserver.pem \
+           --key-file /etc/ssl/kubernetes-etcd/apiserver-key.pem \
+           --trusted-ca-file /etc/ssl/kubernetes-etcd/ca.pem \
+           --client-cert-auth --peer-cert-file /etc/ssl/kubernetes-etcd/apiserver.pem \
+           --peer-key-file /etc/ssl/kubernetes-etcd/apiserver-key.pem \
+           --peer-trusted-ca-file /etc/ssl/kubernetes-etcd/ca.pem \
+           --peer-client-cert-auth \
+           --data-dir /var/etcd/data-<%= @hostname %>"
+      image: "<%= @image_ragistry %>/kubernetes/etcd:2.2.1"
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        tcpSocket:
+          host: "127.0.0.1"
+          port: 12379
+        initialDelaySeconds: 15
+        timeoutSeconds: 15
+      name: etcd-container
+      ports:
+        -
+          containerPort: 12380
+          hostPort: 12380
+          name: serverport
+        -
+          containerPort: 12379
+          hostPort: 12379
+          name: clientport
+      resources:
+        requests:
+          cpu: 200m
+      volumeMounts:
+        -
+          mountPath: /var/etcd
+          name: varetcd
+          readOnly: false
+        -
+          mountPath: "/var/log/kube-etcd.log"
+          name: varlogetcd
+          readOnly: false
+        -
+          mountPath: /etc/ssl/kubernetes-etcd
+          name: etcsslkubernetesetcd
+          readOnly: true
+  dnsPolicy: ClusterFirst
+  hostNetwork: true
+  restartPolicy: Always
+  terminationGracePeriodSeconds: 30
+  volumes:
+    -
+      hostPath:
+        path: /mnt/master-pd/var/etcd
+      name: varetcd
+    -
+      hostPath:
+        path: "/var/log/kube-etcd.log"
+      name: varlogetcd
+    -
+      hostPath:
+        path: /etc/kubernetes/ssl
+      name: etcsslkubernetesetcd

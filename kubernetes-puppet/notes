@@ -1,0 +1,38 @@
+# change kubernetes name by kubernetes_1_6_0 in module name and all .pp files.
+# in native etcd service port is 2379 while in etcd container port is 12379
+
+
+
+
+
+####################################################################
+################## Variables #######################################
+####################################################################
+# these variables will go into unique file of the pod
+$master01_IP = "master 1 host IP"
+$master02_IP = "master2 host IP"
+$master03_IP = "master3 host IP"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###################################################################
+###################### TESTING ####################################
+###################################################################
+
+# package.pp file tested and it is installing all required packages.
+# cert.pp file tested and copied all certs in described locations.
+# etcd.conf.erb is correct 
+# flanneld_first.erb is correct
