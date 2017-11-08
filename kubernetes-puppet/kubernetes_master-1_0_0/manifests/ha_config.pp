@@ -1,11 +1,12 @@
-# Puppet file to configure kubernetes cluster on master and agent nodes.
-class kubernetes_pupa::ha_config {
+# Puppet file to configure kubernetes master on kubernetes hosts.
+class kubernetes_master-1_0_0::ha_config {
 # Copy kubelet and kube_conf to /etc/kubernetes dir
   file {'kubelet':
       path    => '/etc/kubernetes/kubelet',
       ensure  => 'present',
       content => template("$module_name/kubelet.erb"),
       mode    => '644',
+      require => Package['kubernetes'],
   } -> 
 
   file {'kube_config.yaml':
@@ -13,7 +14,7 @@ class kubernetes_pupa::ha_config {
       ensure  => 'present',
       content => template("$module_name/kube_config.yaml.erb"),
       mode    => '644',
-  } 
+  } ->
 
 # Create /etc/kubernetes/manifests dir
   file { '/etc/kubernetes/manifests':
@@ -21,14 +22,14 @@ class kubernetes_pupa::ha_config {
       mode    => '755',
   } ->
 
-# Starting Kubelet 
-  service {'kubelet':
-      name    => 'kubelet',
-      ensure  => 'running',
-      enable  => 'true',
-  }
+# Starting all master component containers 
+  file {'kube_proxy.yaml':
+      path    => '/etc/kubernetes/manifests/kube_proxy.yaml',
+      ensure  => 'present',
+      content => template("$module_name/kube_proxy.yaml.erb"),
+      mode    => '644',
+  } ->
 
-# Starting all master component containers
   file {'kube_apiserver.yaml':
       path    => '/etc/kubernetes/manifests/kube_apiserver.yaml',
       ensure  => 'present',
@@ -51,19 +52,10 @@ class kubernetes_pupa::ha_config {
   } -> 
 
 # Wait for all containers to come up
-  exec {'Wait':
-      command => '/usr/bin/sleep 60',
-  }
 
-# Starting Services
-  service {'flanneld':
-      name    => 'flanneld',
-      ensure  => 'running',
-      enable  => 'true',
-  } 
-
-  service {'docker':
-      name    => 'docker',
+# Starting kubelet service
+  service {'kubelet':
+      name    => 'kubelet',
       ensure  => 'running',
       enable  => 'true',
   }

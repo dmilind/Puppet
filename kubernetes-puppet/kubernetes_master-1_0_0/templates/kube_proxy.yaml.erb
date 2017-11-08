@@ -14,7 +14,7 @@ spec:
         - "--master=https://127.0.0.1"
         - "--kubeconfig=/etc/kubernetes/kube_config.yaml"
         - "--proxy-mode=iptables"
-      image: "<%= @image_ragistry %>/kubernetes/hyperkube:v1.5.2_coreos.0"
+      image: "<%= @kubernetes_artifactory_url %>/kubernetes/hyperkube:<%= @hyperkube_version %>"
       resources:
         requests:
           cpu: 100m

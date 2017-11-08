@@ -14,11 +14,11 @@ spec:
         - "-c"
         - "/usr/local/bin/etcd \
            --name <%= @hostname %> \
-           --initial-cluster dops-pupa1=https://<%= @master01_IP %>:12380,dops-pupa2=https://<%= @master02_IP %>:12380 \
-           --initial-advertise-peer-urls https://<%= @master01_IP %>:12380 \
-           --listen-peer-urls https://<%= @master01_IP %>:12380 \
-           --advertise-client-urls https://<%= @master01_IP %>:12379 \
-           --listen-client-urls https://127.0.0.1:12379,https://<%= @master01_IP %>:12379 \
+           --initial-cluster kubernetes01=https://<%= @kubernetes01 %>:12380,kubernetes02=https://<%= @kubernetes02 %>:12380,kubernetes03=https://<%= @kubernetes03 %>:12380 \
+           --initial-advertise-peer-urls https://<%= @kubernetes01 %>:12380 \
+           --listen-peer-urls https://<%= @kubernetes01 %>:12380 \
+           --advertise-client-urls https://<%= @kubernetes01 %>:12379 \
+           --listen-client-urls https://127.0.0.1:12379,https://<%= @kubernetes01 %>:12379 \
            --cert-file /etc/ssl/kubernetes-etcd/apiserver.pem \
            --key-file /etc/ssl/kubernetes-etcd/apiserver-key.pem \
            --trusted-ca-file /etc/ssl/kubernetes-etcd/ca.pem \
@@ -27,7 +27,7 @@ spec:
            --peer-trusted-ca-file /etc/ssl/kubernetes-etcd/ca.pem \
            --peer-client-cert-auth \
            --data-dir /var/etcd/data-<%= @hostname %>"
-      image: "<%= @image_ragistry %>/kubernetes/etcd:2.2.1"
+      image: "<%= @kubernetes_artifactory_url %>/kubernetes/etcd:2.2.1"
       imagePullPolicy: IfNotPresent
       livenessProbe:
         tcpSocket:

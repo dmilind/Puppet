@@ -21,13 +21,13 @@ spec:
         - "--service-cluster-ip-range=10.222.0.0/16"
         - "--service-node-port-range=10000-53000"
         - "--secure-port=443"
-        - "--advertise-address=<%= @ipaddress %>"
+        - "--advertise-address=<%= @ipaddress_eth0 %>"
         - "--admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota"
         - "--client-ca-file=/etc/kubernetes/ssl/ca.pem"
         - "--tls-cert-file=/etc/kubernetes/ssl/apiserver.pem"
         - "--tls-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem"
         - "--service-account-key-file=/etc/kubernetes/ssl/apiserver-key.pem" 
-      image: "<%= @image_registry %>/kubernetes/hyperkube:v1.5.2_coreos.0"
+      image: "<%= @kubernetes_artifactory_url %>/kubernetes/hyperkube:<%= @hyperkube_version %>"
       imagePullPolicy: IfNotPresent
       name: kube-apiserver
       livenessProbe:

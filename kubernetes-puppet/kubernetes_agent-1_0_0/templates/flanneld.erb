@@ -1,0 +1,11 @@
+# Flanneld configuration options
+# etcd url location. Point this to the server where etcd runs
+FLANNEL_ETCD_ENDPOINTS="https://<%= @kubernetes01 %>:2379,https://<%= @kubernetes02 %>:2379,https://<%= @kubernetes03 %>:2379"
+FLANNELD_ETCD_CAFILE=/etc/kubernetes/ssl/ca.pem
+FLANNELD_ETCD_CERTFILE=/etc/kubernetes/ssl/apiserver.pem
+FLANNELD_ETCD_KEYFILE=/etc/kubernetes/ssl/apiserver-key.pem
+# etcd config key. This is the configuration key that flannel queries
+# For address range assignment
+FLANNEL_ETCD_PREFIX="/kube-centos/network"
+# Any additional options that you want to pass
+#FLANNEL_OPTIONS=""

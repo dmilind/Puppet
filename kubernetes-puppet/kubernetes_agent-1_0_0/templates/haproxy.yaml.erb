@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: haproxy
+  namespace: kube-system
+spec:
+  containers:
+    -
+      image: "<%= @kubernetes_artifactory_url %>/kubernetes/haproxy:1.6"
+      name: haproxy
+      securityContext:
+        privileged: true
+      volumeMounts:
+        -
+          mountPath: /usr/local/etc/haproxy/haproxy.cfg
+          name: haproxyconfig
+          readOnly: true
+  hostNetwork: true
+  volumes:
+    -
+      hostPath:
+        path: /etc/kubernetes/haproxy.cfg
+      name: haproxyconfig

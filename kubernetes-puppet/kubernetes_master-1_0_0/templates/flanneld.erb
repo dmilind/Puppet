@@ -1,6 +1,6 @@
 # Flanneld configuration options
 # etcd url location. Point this to the server where etcd runs
-FLANNEL_ETCD_ENDPOINTS="https://<%= @master01_IP %>:2379,https://<%= @master02_IP %>:2379"
+FLANNEL_ETCD_ENDPOINTS="https://<%= @kubernetes01 %>:2379,https://<%= @kubernetes02%>:2379,https://<%= @kubernetes03 %>:2379"
 FLANNELD_ETCD_CAFILE=/etc/kubernetes/ssl/ca.pem
 FLANNELD_ETCD_CERTFILE=/etc/kubernetes/ssl/apiserver.pem
 FLANNELD_ETCD_KEYFILE=/etc/kubernetes/ssl/apiserver-key.pem

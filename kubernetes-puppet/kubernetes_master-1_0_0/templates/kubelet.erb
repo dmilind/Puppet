@@ -11,10 +11,10 @@ KUBELET_PORT="--port=10250"
 KUBELET_HOSTNAME="--hostname-override=<%= @fqdn %>"
 
 # location of the api-server
-KUBELET_API_SERVER="--api-servers=http://<%= @ipaddress %>"
+KUBELET_API_SERVER="--api-servers=https://<%= @ipaddress_eth0 %>"
 
 # pod infrastructure container
-KUBELET_POD_INFRA_CONTAINER="--pod-infra-container-image=<%= @image_ragistry %>/kubernetes/rhel7/pod-infrastructure:latest"
+KUBELET_POD_INFRA_CONTAINER="--pod-infra-container-image=<%= @kubernetes_artifactory_url %>/kubernetes/rhel7/pod-infrastructure:latest"
 
 # Add your own!
 KUBELET_ARGS="--register-schedulable=false --logtostderr=true --v=0 --allow-privileged=true --config=/etc/kubernetes/manifests --kubeconfig=/etc/kubernetes/kube_config.yaml --cluster_dns=10.222.0.10 --cluster_domain=cluster.local --tls-cert-file=/etc/kubernetes/ssl/apiserver.pem --tls-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem"

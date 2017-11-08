@@ -1,0 +1,18 @@
+defaults
+    mode tcp
+    timeout connect 10s
+    timeout client 30s
+    timeout client-fin 30s
+    timeout server 30s
+    timeout tunnel 3600s
+ 
+ 
+# local worker proxy to apiserver on all masters
+frontend ft_kube_apiserver
+    bind 127.0.0.1:8443
+    default_backend bk_kube_apiserver
+ 
+backend bk_kube_apiserver
+        server <%= @kubernetes01 %> <%= @kubernetes01 %>:443 check
+        server <%= @kubernetes02 %> <%= @kubernetes02 %>:443 check
+        server <%= @kubernetes03 %> <%= @kubernetes03 %>:443 check
